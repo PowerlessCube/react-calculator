@@ -1,36 +1,25 @@
 import { ACTIONS } from "./constants";
 
-const initialState = {
-  calculation: [],
-};
-
-function looseJsonParse(obj) {
-  return Function(`"use strict";return (${obj})`)();
-}
+const initialState = [];
 
 const calculatorReducer = (state, action) => {
   switch (action.type) {
     case ACTIONS.ENTER_CHARACTER:
-      return {
-        calculation: [...state.calculation, ...action.payload],
-      };
+      return [...state, ...action.payload];
 
     case ACTIONS.CALCULATE_EXPRESSION:
-      const calculatedValue = looseJsonParse(state.calculation.join(""));
-      return {
-        calculation: [calculatedValue],
-      };
+      // instead of using eval(), it's shit, according to the MDN docs.
+      // Also this is kind of dangerous, it's ripe for exploiting.
+      const calculatedValue = Function(
+        `"use strict";return (${state.join("")})`
+      )();
+      return [calculatedValue];
 
     case ACTIONS.DELETE_CHARACTER:
-      const { calculation } = state;
-      return {
-        calculation: calculation.slice(0, calculation.length - 1),
-      };
+      return state.slice(0, state.length - 1);
 
     case ACTIONS.CLEAR_CALCULATION:
-      return {
-        calculation: [],
-      };
+      return [];
     default:
       return state;
   }

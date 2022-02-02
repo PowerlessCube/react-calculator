@@ -12,7 +12,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <DisplayResult calculation={state.calculation} />
+        <DisplayResult calculation={state} />
         <CalculatorForm dispatch={dispatch} />
       </header>
     </div>
